@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
-import useTitle from '../../../utilities/useTitle'
+import React, { useEffect } from 'react'
+import useTitle from '../../../components/useTitle'
 
 //Services
 import CarService from '../../../services/common/carService';
 
 //React-Table
 import { useTable, useGlobalFilter, useFilters, usePagination } from 'react-table'
-import ColumnFilter from '../../../utilities/reactTable/columnFilter'
-import GlobalFilter from '../../../utilities/reactTable/globalFilter'
+import ColumnFilter from '../../../components/reactTable/columnFilter'
+import GlobalFilter from '../../../components/reactTable/globalFilter'
 
 //Router
 import { Link } from 'react-router-dom';
@@ -15,22 +15,30 @@ import { Link } from 'react-router-dom';
 //Columns
 import COLUMNS from './columns'
 
+//Redux
+import { useDispatch, useSelector } from 'react-redux';
+import { setCars } from '../../../store/actions/carActions'
 
 
 export default function List({ title }) {
-    const [cars, setCars] = useState([]);
     useTitle(title);
 
-    useEffect(() => {
+    const dispatch = useDispatch()
+    const { cars } = useSelector(state => state.carReducer)
+
+    const getCars = () => {
         let carService = new CarService();
         carService.getCarDetailDtos().then(result => {
-            setCars(result.data.data)
+            dispatch(setCars(result.data.data))
         })
+    }
+
+    useEffect(() => {
+        getCars()
     }, [])
 
     const data = React.useMemo(() => [...cars], [cars])
-    const columns = React.useMemo(  () => COLUMNS,[])
-
+    const columns = React.useMemo(() => COLUMNS, [])
 
     const defaultColumn = React.useMemo(() => {
         return {
@@ -71,7 +79,6 @@ export default function List({ title }) {
                 <div className="flex-1 w-full mr-16">
                     <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
                 </div>
-
                 <Link to="/admin/car/add" className="p-1 inline-flex  items-center justify-center w-24 h-10 rounded-lg mt-1 font-bold text-gray-800 bg-blue-400 hover:bg-blue-300  hover:text-black transition-all"> Ekle</Link>
             </div>
 

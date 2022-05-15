@@ -1,5 +1,5 @@
 import React from 'react'
-import useTitle from '../../utilities/useTitle'
+import useTitle from '../../components/useTitle'
 
 export default function Home({ title }) {
   useTitle(title);

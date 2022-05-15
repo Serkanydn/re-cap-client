@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import useTitle from '../../../utilities/useTitle'
+import useTitle from '../../../components/useTitle'
 import { Link } from 'react-router-dom';
 
 import Select from 'react-select'
-
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
@@ -20,111 +19,99 @@ import { ToastrService, ToastrMessageType, ToastrPosition } from '../../../servi
 
 import { useNavigate } from 'react-router';
 
-import SnSelect from '../../../utilities/CustomElements/SnSelect';
-import { Formik, Form, Field, useFormik } from 'formik';
-import carSchema from '../../../validations/schemas/carSchema';
-import SnTextInput from '../../../utilities/CustomElements/SnTextInput';
+import SnSelect from '../../../components/CustomElements/SnSelect';
+import { Formik, Form, Field, useFormik, useFormikContext, ErrorMessage } from 'formik';
+import {carAddSchema} from '../../../validations/schemas/carSchema';
+import SnTextInput from '../../../components/CustomElements/SnTextInput';
 
 const initialValues = {
-    Images: null,
+    Images: [],
     BrandId: '',
     ColorId: '',
     ModelYear: '',
     DailyPrice: '',
     Description: ''
-
-
 }
 
 
 export default function Add({ title }) {
     useTitle(title);
 
-
     const [selectedImagesPath, setSelectedImagesPath] = useState([])
 
     const [brands, setBrands] = useState([])
     const [colors, setColors] = useState([])
 
-    const [schema, setSchema] = useState(carSchema)
+    const [schema, setSchema] = useState(carAddSchema)
 
+    const navigation = useNavigate()
 
-    const onSelectFile = (event) => {
-        const selectedFiles = event.target.files;
-        setImages(selectedFiles);
-    }
-
-    const onDropFile = (event) => {
-        const selectedFiles = event.dataTransfer.files;
-        setImages(selectedFiles);
-    }
-
-
-    const setImages = (images) => {
+    const setImages = (images, setFieldValue) => {
         const selectedFilesArray = Array.from(images);
         const imagesArray = selectedFilesArray.map((file) => {
-            return URL.createObjectURL(file)
+            file.path = URL.createObjectURL(file)
+            return file
         })
-
         setSelectedImagesPath(imagesArray)
+        setFieldValue("Images", imagesArray)
     }
+
+    const onDrag = (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+    }
+
 
     const getBrands = () => {
         let brandService = new BrandService()
         const selectOptions = []
         brandService.getBrands().then(result => {
             result.data.data.map((option) => (
-                selectOptions.push({ value: option.id, label: option.brandName || option.colorName })
+                selectOptions.push({ value: option.id, label: option.brandName })
             ))
+            selectOptions.unshift({ value: "", label: "Seçiniz" })
+            setBrands(selectOptions)
         });
-        setBrands(selectOptions)
+
     }
     const getColors = () => {
         let colorService = new ColorService()
         const selectOptions = []
         colorService.getColors().then(result => {
             result.data.data.map((option) => (
-                selectOptions.push({ value: option.id, label: option.brandName || option.colorName })
+                selectOptions.push({ value: option.id, label: option.colorName })
             ))
+            selectOptions.unshift({ value: "", label: "Seçiniz" })
+            setColors(selectOptions)
         });
-
-        setColors(selectOptions)
-
     }
-
-
 
     const handleSubmit = (values) => {
         const toastrService = new ToastrService()
         const carImageService = new CarImageService()
         const carService = new CarService();
-        console.log(values)
-
         const { Images, ...car } = values
 
         carService.add(car).then((response) => {
             toastrService.message(response.data.message, "Başarılı", ToastrMessageType.success, ToastrPosition.topRight)
             console.log(Images)
             carImageService.add(Images).then(() => {
-                setTimeout(() => { window.location.reload(); }, 2000)
+                setTimeout(() => { navigation(-1) }, 2000)
+
             })
         })
 
-
-
-
-
-
+        console.log(values)
     }
 
     useEffect(() => {
         getBrands()
         getColors()
+
     }, [])
 
     return (
         <>
-
             <div>
                 <h4 className="font-semibold text-xl ">Araç Bilgileri</h4>
             </div>
@@ -138,25 +125,22 @@ export default function Add({ title }) {
                 <Formik
                     initialValues={initialValues}
                     validationSchema={schema}
-                    onSubmit={
-                        handleSubmit
-                    }
+                    onSubmit={handleSubmit}
                 >
                     {(formik) => (
                         <Form>
                             <div className="md:grid md:grid-cols-2 md:gap-6 ">
-
                                 <div className="mt-5 md:mt-0 md:col-span-2 ">
-
                                     <div className="shadow overflow-hidden sm:rounded-md">
                                         <div className="px-4 py-5 bg-white sm:p-6">
                                             <div className="grid grid-cols-6 gap-6">
                                                 <div className="col-span-6 sm:col-span-6 lg:col-span-3">
-
-
-
-                                                    <Select
+                                                    <SnSelect
                                                         options={brands}
+                                                        value={formik.values.BrandId}
+                                                        name="BrandId"
+                                                        label="  Marka Seçin"
+                                                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                                         onChange={(e) => {
                                                             formik.setFieldValue("BrandId", e.value)
                                                         }}
@@ -164,13 +148,17 @@ export default function Add({ title }) {
                                                 </div>
 
                                                 <div className="col-span-6 sm:col-span-6 lg:col-span-3">
-                                                    <Select
+                                                    <SnSelect
                                                         options={colors}
+                                                        value={formik.values.ColorId}
+                                                        name="ColorId"
+                                                        label="  Renk Seçin"
+                                                        className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                                         onChange={(e) => {
                                                             formik.setFieldValue("ColorId", e.value)
-                                                        }} />
+                                                        }}
+                                                    />
                                                 </div>
-
 
                                                 <div className="col-span-6 sm:col-span-6 lg:col-span-3">
                                                     <label className="block text-sm font-medium text-gray-700">
@@ -179,7 +167,6 @@ export default function Add({ title }) {
                                                     <SnTextInput
                                                         type="text"
                                                         name="ModelYear"
-                                                        autoComplete="street-address"
                                                         className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                                     />
                                                 </div>
@@ -197,21 +184,11 @@ export default function Add({ title }) {
                                                 </div>
 
                                                 <div className="col-span-6 sm:col-span-6 lg:col-span-6"
-                                                    onDragEnter={(e) => {
-                                                        e.preventDefault()
-                                                        e.stopPropagation()
-                                                    }}
-                                                    onDragLeave={(e) => {
-                                                        e.preventDefault()
-                                                        e.stopPropagation()
-                                                    }}
-                                                    onDragOver={(e) => {
-                                                        e.preventDefault()
-                                                        e.stopPropagation()
-                                                    }}
+                                                    onDragEnter={onDrag}
+                                                    onDragLeave={onDrag}
+                                                    onDragOver={onDrag}
                                                     onDrop={e => {
-                                                        onDropFile(e)
-                                                        formik.setFieldValue("Images", Array.from(e.dataTransfer.files))
+                                                        setImages(e.dataTransfer.files, formik.setFieldValue)
                                                     }}
 
                                                 >
@@ -239,31 +216,29 @@ export default function Add({ title }) {
                                                                 >
                                                                     <span>Resim yükle</span>
                                                                     <input id="file-upload" name="Images" type="file" className="sr-only" onChange={(e) => {
-                                                                        onSelectFile(e)
-                                                                        formik.setFieldValue("Images", Array.from(e.target.files))
+                                                                        setImages(e.target.files, formik.setFieldValue)
 
                                                                     }} multiple accept="image/png image/jpeg, image/jpg" />
-
-
-
                                                                 </label>
-                                                                <p className="pl-1">or drag and drop</p>
+
+                                                                <p className="pl-1">ya da sürükle bırak</p>
                                                             </div>
                                                             <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
                                                         </div>
-
-
                                                     </div>
-
-
-
+                                                    {formik.touched.Images && !!formik.errors.Images ? (
+                                                        <p className="text-red-600 block w-full">{formik.errors.Images}</p>
+                                                    ) : null}
                                                 </div>
 
                                                 {selectedImagesPath && selectedImagesPath.map((image, index) => (
                                                     <div className="col-span-1 " key={index}>
                                                         <div className=" relative " >
-                                                            <img src={image} className="w-48 h-24" />
-                                                            <span className="absolute top-1 right-1 cursor-pointer " onClick={() => setSelectedImagesPath(selectedImagesPath.filter((e) => e !== image))}>
+                                                            <img src={image.path} className="w-48 h-24" />
+                                                            <span className="absolute top-1 right-1 cursor-pointer " onClick={() => {
+                                                                const filteredImages = selectedImagesPath.filter((img) => img.path !== image.path)
+                                                                setImages(filteredImages, formik.setFieldValue)
+                                                            }}>
                                                                 <FontAwesomeIcon icon={faXmark} className="  w-6 h-6 bg-red-900 text-white rounded" />
                                                             </span>
                                                         </div>
@@ -277,14 +252,15 @@ export default function Add({ title }) {
                                                     <div className="mt-1">
                                                         <SnTextInput
                                                             type="text"
-
                                                             as="textarea"
                                                             name="Description"
                                                             rows={3}
                                                             className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 block w-full sm:text-sm border border-gray-300 rounded-md"
 
                                                         />
+
                                                     </div>
+
                                                     <p className="mt-2 text-sm text-gray-500">
                                                         Araç için kısa bir açıklama yazın.
                                                     </p>
@@ -296,22 +272,20 @@ export default function Add({ title }) {
                                         <div className="px-4 py-3 bg-gray-50 text-right sm:px-6">
 
 
-                                            {
-                                                (selectedImagesPath.length > 10 ? (
-                                                    <p className="error">
-                                                        En fazla <b>10</b> adet resim yükleyebilirsin. <br />
-                                                        <span>
-                                                            lütfen <b> {selectedImagesPath.length - 10} </b> adet resmi sil{" "}
-                                                        </span>
-                                                    </p>
-                                                ) : (
-                                                    <button
-                                                        type="submit"
-                                                        className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                                    >
-                                                        Save
-                                                    </button>
-                                                ))
+                                            {(selectedImagesPath.length > 10 ? (
+                                                <p className="error">
+                                                    En fazla <b>10</b> adet resim yükleyebilirsin. <br />
+                                                    <span> lütfen <b> {selectedImagesPath.length - 10} </b> adet resmi sil{" "}
+                                                    </span>
+                                                </p>
+                                            ) : (
+                                                <button
+                                                    type="submit"
+                                                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                                                >
+                                                    Ekle
+                                                </button>
+                                            ))
                                             }
 
                                         </div>

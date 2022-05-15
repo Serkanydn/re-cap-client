@@ -11,8 +11,8 @@ const images = { logo, control, chart_fill,car }
 const App = () => {
     const [open, setOpen] = useState(true);
     const Menus = [
-        { title: "Dashboard", src: images.chart_fill, path: "/admin" },
-        { title: "Arabalar", src: images.car, path: "/admin/car/list" },
+        { title: "Anasayfa", src: images.chart_fill, path: "/admin" },
+        { title: "Araçlar", src: images.car, path: "/admin/car/list" },
         { title: "Renkler", src: "User", gap: true, path: "/admin/accounts/list" },
         { title: "Markalar ", src: calendar, path: "/admin/schedules" },
     ];

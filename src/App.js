@@ -20,15 +20,10 @@ function App() {
 
         </Route>
 
-
-
-
-
-
         <Route path="/admin" element={<AdminDashborad />} >
           <Route index element={<AdminHome title="Anasayfa" />} />
           <Route path="/admin/car/list" element={<AdminCarList title="Araç Listesi" />} />
-          <Route path="/admin/car/detail/:id" element={<AdminCarDetail title="Araç Detayı" />} />
+          <Route path="/admin/car/detail/:carId" element={<AdminCarDetail title="Araç Detayı" />} />
           <Route path="/admin/car/add" element={<AdminCarAdd title="Araç Ekle" />} />
 
         </Route>

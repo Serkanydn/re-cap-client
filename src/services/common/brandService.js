@@ -1,12 +1,10 @@
 import axios from 'axios';
-import {baseUrl} from './projectUrls';
+import { baseUrl } from './projectUrls';
 
 export default class BrandService {
 
-    async getBrands() {
-        return await axios.get(`${baseUrl}/brands/getall`);
-
-
+    getBrands() {
+        return axios.get(`${baseUrl}/brands/getall`);
     }
 
     add(brand) {
