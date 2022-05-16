@@ -10,7 +10,7 @@ export  class ToastrService {
             "debug": false,
             "newestOnTop": false,
             "progressBar": false,
-            "positionClass": "toast-top-right",
+            "positionClass": position,
             "preventDuplicates": false,
             "onclick": null,
             "showDuration": "300",

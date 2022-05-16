@@ -1,7 +1,7 @@
 import { SET_CARS } from "../actions/carActions";
 import { SET_CAR } from "../actions/carActions";
-import { cars } from "../initialValues/cars";
-import { car } from "../initialValues/cars";
+import { cars } from "../initialValues/car";
+import { car } from "../initialValues/car";
 
 const initialState = {
     cars: cars,

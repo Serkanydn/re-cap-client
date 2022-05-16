@@ -1,8 +1,6 @@
-import { brands } from "../initialValues/brands"
-
 export const SET_BRANDS="SET_BRANDS"
 
-export function setBrands(){
+export function setBrands(brands){
 
     return{
         type:SET_BRANDS,

@@ -7,13 +7,11 @@ import Select from 'react-select'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
+//Services
 import CarService from '../../../services/common/carService';
 import CarImageService from '../../../services/common/carImageService';
 import BrandService from '../../../services/common/brandService';
 import ColorService from '../../../services/common/colorService';
-
-
-
 import { ToastrService, ToastrMessageType, ToastrPosition } from '../../../services/common/toastrService';
 
 

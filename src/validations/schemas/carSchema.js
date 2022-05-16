@@ -1,22 +1,22 @@
 import * as Yup from 'yup'
 
+import { bosKalamaz, enAz1AdetResimSecmelisiniz } from '../../constants/strings'
 
 export const carAddSchema = Yup.object({
-    BrandId: Yup.number().required("Boş kalamaz"),
-    ColorId: Yup.number().required("Boş kalamaz"),
-    ModelYear: Yup.string().required("Boş kalamaz"),
-    DailyPrice: Yup.number().required("Boş kalamaz"),
-    Description: Yup.string().required("Boş kalamaz"),
-    Images: Yup.array().min(1,"En az 1 resim seçmelisiniz.").nullable()
+    BrandId: Yup.number().required(bosKalamaz),
+    ColorId: Yup.number().required(bosKalamaz),
+    ModelYear: Yup.string().required(bosKalamaz),
+    DailyPrice: Yup.number().required(bosKalamaz),
+    Description: Yup.string().required(bosKalamaz),
+    Images: Yup.array().min(1, enAz1AdetResimSecmelisiniz).nullable()
 })
 
 export const carUpdateSchema = Yup.object({
-    BrandId: Yup.number().required("Boş kalamaz"),
-    ColorId: Yup.number().required("Boş kalamaz"),
-    ModelYear: Yup.string().required("Boş kalamaz"),
-    DailyPrice: Yup.number().required("Boş kalamaz"),
-    Description: Yup.string().required("Boş kalamaz"),
-    Images: Yup.array().min(1,"En az 1 resim seçmelisiniz.").nullable()
+    BrandId: Yup.number().required(bosKalamaz),
+    ColorId: Yup.number().required(bosKalamaz),
+    ModelYear: Yup.string().required(bosKalamaz),
+    DailyPrice: Yup.number().required(bosKalamaz),
+    Description: Yup.string().required(bosKalamaz),
+    Images: Yup.array().min(1, enAz1AdetResimSecmelisiniz).nullable()
 })
 
- 

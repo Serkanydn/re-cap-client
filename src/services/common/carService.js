@@ -3,8 +3,12 @@ import { baseUrl } from './projectUrls'
 
 export default class CarService {
 
-    async getCars() {
-        return await axios.get(`${baseUrl}/cars/getall`);
+    getCars() {
+        return axios.get(`${baseUrl}/cars/getall`);
+    }
+
+    getCarsByColorId() {
+        return axios.get(`${baseUrl}/cars/getall`);
     }
 
     getCarDetailDtos() {
@@ -24,18 +28,18 @@ export default class CarService {
         // });
     }
 
-    update(car){
+    update(car) {
         return axios.post(`${baseUrl}/cars/update`, car);
     }
-    
-    delete(car){
+
+    delete(car) {
         return axios.post(`${baseUrl}/cars/delete`, car);
     }
-    
-    getCarDetailDtoById(carId){
-        return axios.get(`${baseUrl}/cars/getcardetailsbycarid?carId=${carId}`); 
+
+    getCarDetailDtoById(carId) {
+        return axios.get(`${baseUrl}/cars/getcardetailsbycarid?carId=${carId}`);
     }
 
-    
+
 
 } 

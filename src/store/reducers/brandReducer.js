@@ -1,5 +1,5 @@
 import { SET_BRANDS } from "../actions/brandActions";
-import { brands } from "../initialValues/brands";
+import { brands } from "../initialValues/brand";
 
 const initialState = {
     brands: brands

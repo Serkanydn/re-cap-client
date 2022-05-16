@@ -4,17 +4,19 @@ import chart_fill from "../../assets/admin/icon/chart_fill.png"
 import logo from "../../assets/admin/icon/logo.png"
 import control from "../../assets/admin/icon/control.png"
 import car from "../../assets/admin/icon/car.png"
+import color from "../../assets/admin/icon/color.png"
+import brand from "../../assets/admin/icon/brand.png"
 import { Link } from "react-router-dom";
 
-const images = { logo, control, chart_fill,car }
+const images = { logo, control, chart_fill,car,color,brand }
 
 const App = () => {
     const [open, setOpen] = useState(true);
     const Menus = [
         { title: "Anasayfa", src: images.chart_fill, path: "/admin" },
         { title: "Araçlar", src: images.car, path: "/admin/car/list" },
-        { title: "Renkler", src: "User", gap: true, path: "/admin/accounts/list" },
-        { title: "Markalar ", src: calendar, path: "/admin/schedules" },
+        { title: "Renkler", src: images.color, gap: true, path: "/admin/color/list" },
+        { title: "Markalar ", src: images.brand, path: "/admin/brand/list" },
     ];
 
 
